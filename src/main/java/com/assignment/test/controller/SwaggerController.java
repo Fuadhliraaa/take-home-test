@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class SwaggerController {
   
-  public ResponseEntity registrasiUser(@Valid @RequestBody UserRegisSwaggerReq req) {
 
-  }
   
 }
