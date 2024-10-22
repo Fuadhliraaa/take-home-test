@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.test.interview.repository") // Scan for JPA repositories in this package
+@EnableJpaRepositories(basePackages = "com.assignment.test.repository") // Scan for JPA repositories in this package
 @EnableTransactionManagement  // Enable transaction management for JPA
 public class JpaConfig {
 
