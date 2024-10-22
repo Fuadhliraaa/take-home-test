@@ -1,4 +1,4 @@
-package com.assignment.test.dto.swagger;
+package com.assignment.test.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class SwaggerDataDto {
+public class Data {
 
     private Object data;
     private List dataList;
