@@ -2,11 +2,12 @@ package com.assignment.test.utils;
 
 import org.springframework.context.annotation.Bean;
 
+import java.util.UUID;
+
 public class UserHelper {
     
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    public static String generateUUID() {
+      return UUID.randomUUID().toString().replace("-", "");
+    }
 
 }

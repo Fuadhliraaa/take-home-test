@@ -5,6 +5,7 @@ import com.assignment.test.constant.CommonConstant;
 import com.assignment.test.constant.QueryConstant;
 import com.assignment.test.dto.UserReq;
 import com.assignment.test.dto.UserRes;
+import com.assignment.test.utils.UserHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -18,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -37,20 +42,35 @@ public class UserServiceImpl implements UserService{
   public UserRes userRegistration(UserReq req) throws RuntimeException, JsonProcessingException {
     log.info("START - USER SERVICE - USER REGISTRATION");
     UserRes res = new UserRes();
+    
+    String jdbcUrl = QueryConstant.JDBC_URL;
+    String username = QueryConstant.USERNAME;
+    String password = QueryConstant.PASSWORD;
+    
+    Connection connection = null;
+    PreparedStatement ps = null;
 
     try {
       String BASE_URL_REGIS = BaseURLConstant.SWAGGER_BASE_URL.concat("/registration");
       ResponseEntity<UserRes> responseEntity = restTemplate.postForEntity(BASE_URL_REGIS, req, UserRes.class);
 
       res = responseEntity.getBody();
-
-      entityManager.createNativeQuery(QueryConstant.QUERY_SAVE_USER)
-          .setParameter("id", UUID.randomUUID().toString().replace("-", ""))
-          .setParameter("email", req.getEmail())
-          .setParameter("first_nm", req.getFirst_name())
-          .setParameter("last_nm", req.getLast_name())
-          .setParameter("password", req.getPassword())
-          .executeUpdate();
+      
+      connection = DriverManager.getConnection(jdbcUrl, username, password);
+      
+      ps = connection.prepareCall(QueryConstant.QUERY_SAVE_USER);
+      
+      ps.setString(1, UserHelper.generateUUID());
+      ps.setString(2, req.getEmail());
+      ps.setString(3, req.getFirst_name());
+      ps.setString(4, req.getLast_name());
+      ps.setString(5, req.getPassword());
+      
+      int rowInserted = ps.executeUpdate();
+      
+      if (rowInserted > 0) {
+        log.info("Successfully save to Database");
+      }
 
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
@@ -58,17 +78,23 @@ public class UserServiceImpl implements UserService{
 
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, UserRes.class);
+        
+        log.error("Error, " + e);
 
       }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (connection != null) connection.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
     }
-
+    
     log.info("END - USER SERVICE - USER REGISTRATION");
     return res;
-  }
-
-  @Override
-  public UserRes userLogin(UserReq req) throws JsonProcessingException {
-    return null;
   }
 
 }
