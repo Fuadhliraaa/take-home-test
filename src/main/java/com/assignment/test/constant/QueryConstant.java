@@ -8,6 +8,6 @@ public class QueryConstant {
   public static final String PASSWORD = "root";
 
   public static final String QUERY_SAVE_USER = "INSERT INTO users (id, email, first_nm, last_nm, password) VALUES (?, ?, ? ,?, ?)";
-  public static final String QUERY_GET_USER_BY_EMAIL = "SELECT a.email FROM USERS a WHERE a.email = ?";
+  public static final String QUERY_GET_USER_BY_EMAIL = "SELECT a.email, a.password FROM USERS a WHERE a.email = ?";
 
 }

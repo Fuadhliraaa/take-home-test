@@ -1,5 +1,6 @@
 package com.assignment.test.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -25,6 +26,14 @@ public class JWTUtils {
         .signWith(SECRET_KEY)
         .compact();
     
+  }
+  
+  public String extractEmail(String token) {
+    Claims claims = Jwts.parser()
+        .setSigningKey(SECRET_KEY)
+        .parseClaimsJws(token)
+        .getBody();
+    return claims.getSubject();
   }
   
 }

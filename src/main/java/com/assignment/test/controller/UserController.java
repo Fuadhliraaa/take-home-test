@@ -1,5 +1,7 @@
 package com.assignment.test.controller;
 
+import com.assignment.test.dto.LoginReq;
+import com.assignment.test.dto.LoginRes;
 import com.assignment.test.dto.UserReq;
 import com.assignment.test.dto.UserRes;
 import com.assignment.test.service.UserService;
@@ -27,6 +29,14 @@ public class UserController {
     log.info("START - USER CONTROLLER - USER REGISTRATION");
     UserRes res = userService.userRegistration(req);
     log.info("FINISH - USER CONTROLLER - USER REGISTRATION");
+    return ResponseEntity.ok(res);
+  }
+  
+  @PostMapping("/login")
+  public ResponseEntity userLogin(@RequestBody LoginReq req) throws JsonProcessingException {
+    log.info("START - USER CONTROLLER - LOGIN USER");
+    LoginRes res = userService.userLogin(req);
+    log.info("FINISH - USER CONTROLLER - LOGIN USER");
     return ResponseEntity.ok(res);
   }
   

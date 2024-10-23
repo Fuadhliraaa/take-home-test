@@ -3,11 +3,12 @@ package com.assignment.test.service;
 import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.CommonConstant;
 import com.assignment.test.constant.QueryConstant;
-import com.assignment.test.dto.UserReq;
-import com.assignment.test.dto.UserRes;
+import com.assignment.test.dto.*;
+import com.assignment.test.utils.JWTUtils;
 import com.assignment.test.utils.UserHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityManager;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
@@ -19,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -79,7 +77,7 @@ public class UserServiceImpl implements UserService{
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, UserRes.class);
         
-        log.error("Error, " + e);
+        log.info("Error, " + e);
 
       }
     } catch (SQLException e) {
@@ -94,6 +92,79 @@ public class UserServiceImpl implements UserService{
     }
     
     log.info("END - USER SERVICE - USER REGISTRATION");
+    return res;
+  }
+  
+  @Override
+  public LoginRes userLogin(LoginReq req) throws JsonProcessingException {
+    log.info("START - USER SERVICE - USER LOGIN");
+    LoginRes res = new LoginRes();
+    
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    
+    try {
+      
+      String BASE_URL_LOGIN = BaseURLConstant.SWAGGER_BASE_URL.concat("/login");
+      ResponseEntity<LoginRes> responseEntity = restTemplate.postForEntity(BASE_URL_LOGIN, req, LoginRes.class);
+      
+      
+      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BY_EMAIL);
+      ps.setString(1, req.getEmail());
+      
+      rs = ps.executeQuery();
+      
+      String email = null;
+      String password = null;
+      while (rs.next()) {
+        
+        email = rs.getString("email");
+        password = rs.getString("password");
+        
+      }
+      
+      if (!StringUtils.isEmpty(email)) {
+        
+        Data data = new Data();
+        if (req.getPassword().equals(password)) {
+          String token = JWTUtils.generateToken(email);
+          data.setData(token);
+        }
+        
+        res.setData(data);
+        res = responseEntity.getBody();
+        
+      } else {
+        res.setMessage(CommonConstant.STATUS_CODE_NOTREGISTED);
+        res.setMessage(CommonConstant.STATUS_MESSAGE_USER_NOT_REGISTRED);
+        res.setData(null);
+      }
+      
+    } catch (HttpClientErrorException e) {
+      
+      if (e.getStatusCode().value() == 400) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, LoginRes.class);
+        
+        log.info("Error, " + e);
+      }
+      
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (con != null) con.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
+    }
+    
+    log.info("END - USER SERVICE - USER LOGIN");
     return res;
   }
 
