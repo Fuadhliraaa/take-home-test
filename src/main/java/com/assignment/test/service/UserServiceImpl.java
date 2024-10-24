@@ -4,8 +4,8 @@ import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.CommonConstant;
 import com.assignment.test.constant.QueryConstant;
 import com.assignment.test.dto.*;
-import com.assignment.test.security.JwtService;
 import com.assignment.test.utils.CommonUtils;
+import com.assignment.test.utils.JWTUtils;
 import com.assignment.test.utils.UserHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,6 @@ import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +27,13 @@ import java.io.IOException;
 import java.sql.*;
 
 @Service
-public class UserServiceImpl implements UserService{
-
+public class UserServiceImpl implements UserService {
+  
   private final Logger log = LoggerFactory.getLogger(UserService.class);
-
+  
   @Autowired
   private RestTemplate restTemplate;
   
-  @Autowired
-  private JwtService jwtService;
-
   @Transactional
   public UserRes userRegistration(UserReq req) throws RuntimeException, JsonProcessingException {
     log.info("START - USER SERVICE - USER REGISTRATION");
@@ -49,11 +45,11 @@ public class UserServiceImpl implements UserService{
     
     Connection connection = null;
     PreparedStatement ps = null;
-
+    
     try {
       String BASE_URL_REGIS = BaseURLConstant.SWAGGER_BASE_URL.concat("/registration");
       ResponseEntity<UserRes> responseEntity = restTemplate.postForEntity(BASE_URL_REGIS, req, UserRes.class);
-
+      
       res = responseEntity.getBody();
       
       connection = DriverManager.getConnection(jdbcUrl, username, password);
@@ -66,21 +62,15 @@ public class UserServiceImpl implements UserService{
       ps.setString(4, req.getLast_name());
       ps.setString(5, req.getPassword());
       
-      int rowInserted = ps.executeUpdate();
+      ps.executeUpdate();
       
-      if (rowInserted > 0) {
-        log.info("Successfully save to Database");
-      }
-
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
         String errorResponse = e.getResponseBodyAsString();
-
+        
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, UserRes.class);
         
-        log.info("Error, " + e);
-
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -118,30 +108,13 @@ public class UserServiceImpl implements UserService{
       rs = ps.executeQuery();
       
       String email = null;
-      String password = null;
       while (rs.next()) {
         
         email = rs.getString("email");
-        password = rs.getString("password");
         
       }
       
-      if (!StringUtils.isEmpty(email)) {
-        
-        Data data = new Data();
-        if (req.getPassword().equals(password)) {
-          String token = jwtService.generateToken(email);
-          data.setData(token);
-        }
-        
-        res.setData(data);
-        res = responseEntity.getBody();
-        
-      } else {
-        res.setMessage(CommonConstant.STATUS_CODE_NOTREGISTED);
-        res.setMessage(CommonConstant.STATUS_MESSAGE_USER_NOT_REGISTRED);
-        res.setData(null);
-      }
+      res = responseEntity.getBody();
       
     } catch (HttpClientErrorException e) {
       
@@ -151,7 +124,6 @@ public class UserServiceImpl implements UserService{
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, LoginRes.class);
         
-        log.info("Error, " + e);
       }
       
     } catch (SQLException e) {
@@ -184,20 +156,10 @@ public class UserServiceImpl implements UserService{
       String BASE_URL_UPLOAD_IMAGE = BaseURLConstant.SWAGGER_BASE_URL.concat("/profile/image");
       
       HttpHeaders headers = new HttpHeaders();
+      headers.set("Authorization", token);
       headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-      headers.setBearerAuth(CommonUtils.getAuthToken(token));
       
-      ByteArrayResource fileAsResource = new ByteArrayResource(file.getBytes()) {
-        @Override
-        public String getFilename() {
-          return file.getOriginalFilename();  // Return the actual file name
-        }
-      };
-      
-      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("file", fileAsResource);
-      
-      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+      HttpEntity<MultiValueMap<String, Object>> requestEntity = getMultiValueMapHttpEntity(file, headers);
       ResponseEntity<UserRes> responseEntity = restTemplate.exchange(
           BASE_URL_UPLOAD_IMAGE,
           HttpMethod.PUT,
@@ -205,7 +167,9 @@ public class UserServiceImpl implements UserService{
           UserRes.class
       );
       
-      res = responseEntity.getBody();
+      
+      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
+      String email = JWTUtils.getEmailFromPayload(newToken);
       
       String ogName = file.getOriginalFilename();
       String generateName = null;
@@ -213,13 +177,14 @@ public class UserServiceImpl implements UserService{
         generateName = CommonUtils.generateDynamicFileName(ogName);
       }
       
-      File dir = new File(imageDir);
+      File dir = new File(imageDir.concat("/imageprofile"));
       if (!dir.exists()) {
         dir.mkdir();
       }
       
       con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_GET_USER_ID);
+      ps.setString(1, email);
       
       rs = ps.executeQuery();
       
@@ -235,10 +200,9 @@ public class UserServiceImpl implements UserService{
       ps.setInt(4, (int) file.getSize());
       ps.setString(5, userId);
       
-      int rowInserted = ps.executeUpdate();
-      if (rowInserted > 0) {
-        log.info("Successfully save to Database");
-      }
+      ps.executeUpdate();
+      
+      res = responseEntity.getBody();
       
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
@@ -247,7 +211,11 @@ public class UserServiceImpl implements UserService{
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, UserRes.class);
         
-        log.info("Error, " + e);
+      } else if (e.getStatusCode().value() == 401) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, UserRes.class);
         
       }
     } catch (IOException | SQLException e) {
@@ -275,37 +243,19 @@ public class UserServiceImpl implements UserService{
     ResultSet rs = null;
     
     try {
-    
+      
       String BASE_URL_PROFILE = BaseURLConstant.SWAGGER_BASE_URL.concat("/profile");
-      ResponseEntity<UserRes> responseEntity = restTemplate.getForEntity(BASE_URL_PROFILE, UserRes.class);
       
-      String email = jwtService.extractUsername(token);
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Authorization", token);
+      headers.set("Accept", "application/json");
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
-      ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BY_EMAIL);
-      ps.setString(1, email);
+      HttpEntity<String> entity = new HttpEntity<>(headers);
       
-      rs = ps.executeQuery();
+      ResponseEntity<UserRes> response = restTemplate.exchange(BASE_URL_PROFILE, HttpMethod.GET, entity, UserRes.class);
       
-      String firstName = null;
-      String lastName = null;
-      String profileImage = null;
-      while (rs.next()) {
-        
-        firstName = rs.getString("first_nm");
-        lastName = rs.getString("last_name");
-        
-      }
+      res = response.getBody();
       
-      UserDto dto = new UserDto();
-      dto.setEmail(email);
-      dto.setFirst_name(firstName);
-      dto.setLast_name(lastName);
-      dto.setImage(profileImage);
-      
-      res.setData(dto);
-      res = responseEntity.getBody();
-    
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
         String errorResponse = e.getResponseBodyAsString();
@@ -313,7 +263,69 @@ public class UserServiceImpl implements UserService{
         ObjectMapper objectMapper = new ObjectMapper();
         res = objectMapper.readValue(errorResponse, UserRes.class);
         
-        log.info("Error, " + e);
+      } else if (e.getStatusCode().value() == 401) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, UserRes.class);
+        
+      }
+    }
+    
+    log.info("START - USER SERVICE - GET USER PROFILE");
+    return res;
+  }
+  
+  @Override
+  public UserRes updateUserProfile(UserReq req, String token) throws JsonProcessingException {
+    log.info("START - USER SERVICE - UPDATE USER");
+    UserRes res = new UserRes();
+    
+    Connection con = null;
+    PreparedStatement ps = null;
+    
+    try {
+      
+      String BASE_URL_PROFILE_UPDATE = BaseURLConstant.SWAGGER_BASE_URL.concat("/profile/update");
+      
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Authorization", token);
+      headers.set("Accept", "application/json");
+      
+      HttpEntity<UserReq> entity = new HttpEntity<>(req, headers);
+      ResponseEntity<UserRes> responseEntity = restTemplate.exchange(
+          BASE_URL_PROFILE_UPDATE,
+          HttpMethod.PUT,
+          entity,
+          UserRes.class
+      );
+      
+      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
+      String email = JWTUtils.getEmailFromPayload(newToken);
+      
+      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      ps = con.prepareCall(QueryConstant.QUERY_UPDATE_USER_PROFILE);
+      ps.setString(1, req.getFirst_name());
+      ps.setString(2, req.getLast_name());
+      ps.setString(3, email);
+      
+      ps.executeUpdate();
+      
+      res = responseEntity.getBody();
+      
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode().value() == 400) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, UserRes.class);
+        
+        
+      } else if (e.getStatusCode().value() == 401) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, UserRes.class);
         
       }
     } catch (SQLException e) {
@@ -327,8 +339,19 @@ public class UserServiceImpl implements UserService{
       }
     }
     
-    log.info("START - USER SERVICE - GET USER PROFILE");
+    log.info("START - USER SERVICE - UPDATE USER");
     return res;
+  }
+  
+  
+//  STATIC METHOD
+  
+  private static HttpEntity<MultiValueMap<String, Object>> getMultiValueMapHttpEntity(MultipartFile file, HttpHeaders headers) throws IOException {
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("file", file.getResource());
+    
+    return new HttpEntity<>(body, headers);
   }
   
 }

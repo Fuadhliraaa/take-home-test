@@ -39,17 +39,27 @@ public class UserController {
   }
   
   @PutMapping("/profile/image")
-  public ResponseEntity uploadImageProfile(@RequestPart MultipartFile file,
+  public ResponseEntity uploadImageProfile(@RequestParam MultipartFile file,
                                            @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - UPLOAD IMAGE");
     UserRes res = userService.updloadImage(file, token);
     log.info("START - USER CONTROLLER - UPLOAD IMAGE");
-    return ResponseEntity.ok(null);
+    return ResponseEntity.ok(res);
   }
   
   @GetMapping("/profile")
   public ResponseEntity getUserProfile(@RequestHeader("Authorization") String token) throws JsonProcessingException {
+    log.info("START - USER CONTROLLER - USER PROFILE");
     UserRes res = userService.getUserProfile(token);
+    log.info("FINISH - USER CONTROLLER - USER PROFILE");
+    return ResponseEntity.ok(res);
+  }
+  
+  @PutMapping("/profile/update")
+  public ResponseEntity updateUserProfile(@RequestBody UserReq req, @RequestHeader("Authorization") String token) throws JsonProcessingException {
+    log.info("START - USER CONTROLLER - UPDATE USER PROFILE");
+    UserRes res = userService.updateUserProfile(req, token);
+    log.info("FINISH - USER CONTROLLER - UPDATE USER PROFILE");
     return ResponseEntity.ok(res);
   }
   
