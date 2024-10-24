@@ -1,17 +1,19 @@
-package com.assignment.test.dto.information;
+package com.assignment.test.dto.userdto;
 
-import com.assignment.test.dto.BaseRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfoRes extends BaseRes {
-  
-  private Object data;
-  
+public class Data {
+
+    private Object data;
+    private List dataList;
+
 }

@@ -2,10 +2,10 @@ package com.assignment.test.service;
 
 import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.QueryConstant;
-import com.assignment.test.dto.user.LoginReq;
-import com.assignment.test.dto.user.LoginRes;
-import com.assignment.test.dto.user.UserReq;
-import com.assignment.test.dto.user.UserRes;
+import com.assignment.test.dto.userdto.LoginReq;
+import com.assignment.test.dto.userdto.LoginRes;
+import com.assignment.test.dto.userdto.UserReq;
+import com.assignment.test.dto.userdto.UserRes;
 import com.assignment.test.utils.CommonUtils;
 import com.assignment.test.utils.JWTUtils;
 import com.assignment.test.utils.UserHelper;

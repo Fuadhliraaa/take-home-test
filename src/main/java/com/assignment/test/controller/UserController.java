@@ -1,9 +1,9 @@
 package com.assignment.test.controller;
 
-import com.assignment.test.dto.user.LoginReq;
-import com.assignment.test.dto.user.LoginRes;
-import com.assignment.test.dto.user.UserReq;
-import com.assignment.test.dto.user.UserRes;
+import com.assignment.test.dto.userdto.LoginReq;
+import com.assignment.test.dto.userdto.LoginRes;
+import com.assignment.test.dto.userdto.UserReq;
+import com.assignment.test.dto.userdto.UserRes;
 import com.assignment.test.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;

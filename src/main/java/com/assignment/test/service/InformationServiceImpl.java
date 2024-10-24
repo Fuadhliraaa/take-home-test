@@ -1,8 +1,7 @@
 package com.assignment.test.service;
 
 import com.assignment.test.constant.BaseURLConstant;
-import com.assignment.test.dto.information.InfoRes;
-import com.assignment.test.dto.user.UserRes;
+import com.assignment.test.dto.informationdto.InfoRes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

@@ -1,9 +1,8 @@
 package com.assignment.test.controller;
 
-import com.assignment.test.dto.information.InfoRes;
+import com.assignment.test.dto.informationdto.InfoRes;
 import com.assignment.test.service.InformationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
