@@ -1,20 +1,17 @@
-package com.assignment.test.dto;
+package com.assignment.test.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.assignment.test.dto.BaseRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Data {
+public class UserRes extends BaseRes {
 
     private Object data;
-    private List dataList;
 
 }

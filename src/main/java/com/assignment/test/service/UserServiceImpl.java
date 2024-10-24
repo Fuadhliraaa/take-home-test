@@ -1,15 +1,16 @@
 package com.assignment.test.service;
 
 import com.assignment.test.constant.BaseURLConstant;
-import com.assignment.test.constant.CommonConstant;
 import com.assignment.test.constant.QueryConstant;
-import com.assignment.test.dto.*;
+import com.assignment.test.dto.user.LoginReq;
+import com.assignment.test.dto.user.LoginRes;
+import com.assignment.test.dto.user.UserReq;
+import com.assignment.test.dto.user.UserRes;
 import com.assignment.test.utils.CommonUtils;
 import com.assignment.test.utils.JWTUtils;
 import com.assignment.test.utils.UserHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

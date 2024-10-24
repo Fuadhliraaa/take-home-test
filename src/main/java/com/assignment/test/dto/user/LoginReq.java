@@ -1,4 +1,4 @@
-package com.assignment.test.dto;
+package com.assignment.test.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRes extends BaseRes{
+public class LoginReq {
   
-  private Object data;
+  private String email;
+  private String password;
   
 }
