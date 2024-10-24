@@ -35,6 +35,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.postgresql:postgresql'
 	implementation "org.springframework.boot:spring-boot-starter-security"
+	testImplementation 'org.springframework.security:spring-security-test:4.0.0.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.4'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'

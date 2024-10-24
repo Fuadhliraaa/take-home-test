@@ -10,10 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,6 +35,21 @@ public class UserController {
     log.info("START - USER CONTROLLER - LOGIN USER");
     LoginRes res = userService.userLogin(req);
     log.info("FINISH - USER CONTROLLER - LOGIN USER");
+    return ResponseEntity.ok(res);
+  }
+  
+  @PutMapping("/profile/image")
+  public ResponseEntity uploadImageProfile(@RequestPart MultipartFile file,
+                                           @RequestHeader("Authorization") String token) throws JsonProcessingException {
+    log.info("START - USER CONTROLLER - UPLOAD IMAGE");
+    UserRes res = userService.updloadImage(file, token);
+    log.info("START - USER CONTROLLER - UPLOAD IMAGE");
+    return ResponseEntity.ok(null);
+  }
+  
+  @GetMapping("/profile")
+  public ResponseEntity getUserProfile(@RequestHeader("Authorization") String token) throws JsonProcessingException {
+    UserRes res = userService.getUserProfile(token);
     return ResponseEntity.ok(res);
   }
   

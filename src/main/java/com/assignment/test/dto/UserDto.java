@@ -1,6 +1,5 @@
 package com.assignment.test.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +9,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRes extends BaseRes {
-
-    private Object data;
-
+public class UserDto {
+  
+  private String email;
+  private String first_name;
+  private String last_name;
+  private String image;
+  
 }
