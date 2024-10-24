@@ -7,7 +7,14 @@ public class QueryConstant {
   public static final String USERNAME = "postgres";
   public static final String PASSWORD = "root";
 
+//  TABLE USER
   public static final String QUERY_SAVE_USER = "INSERT INTO users (id, email, first_nm, last_nm, password) VALUES (?, ?, ? ,?, ?)";
-  public static final String QUERY_GET_USER_BY_EMAIL = "SELECT a.email FROM USERS a WHERE a.email = ?";
+  public static final String QUERY_GET_USER_BY_EMAIL = "SELECT a.email, a.password FROM USERS a WHERE a.email = ?";;
+  public static final String QUERY_GET_USER_ID = "SELECT a.id FROM USERS a WHERE a.EMAIL = ?";
+  public static final String QUERY_UPDATE_USER_PROFILE = "UPDATE users SET first_nm = ?, last_nm = ? WHERE email = ?";
+  
+//  IMAGE TABLE
+  public static final String QUERY_SAVE_IMAGE = "INSERT INTO user_pic (id, image_nm, image_dir, image_size, user_id) VALUES " +
+    "(?, ?, ?, ?, ?)";
 
 }

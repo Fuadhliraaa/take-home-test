@@ -32,5 +32,8 @@ public class UserEntity {
 
   @Column(name = "password")
   private String password;
+  
+  @Column(name = "profile_img")
+  private String profileImage;
 
 }

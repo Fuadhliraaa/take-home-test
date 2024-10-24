@@ -1,30 +1,35 @@
 package com.assignment.test.utils;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Date;
+import java.util.Random;
 
 public class JWTUtils {
   
-  public static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+  public static String getTokenFromAuthorizationHeader(String token) {
+    
+    if (token != null && token.startsWith("Bearer ")) {
+      return token.substring(7);
+    }
+    
+    return null;
+  }
   
-  public static String generateToken(String email) {
-    
-    long currentTimeMillis = System.currentTimeMillis();
-    Date now = new Date(currentTimeMillis);
-    Date expiryDate = new Date(currentTimeMillis + 12 * 60 * 60 * 1000);
-    
-    return Jwts.builder()
-        .setSubject(email)
-        .setIssuedAt(now)
-        .setExpiration(expiryDate)
-        .signWith(SECRET_KEY)
-        .compact();
-    
+  public static String getEmailFromPayload(String token) {
+    DecodedJWT decodedJWT = JWT.decode(token);
+    String email = decodedJWT.getClaim("email").asString();
+    return email;
   }
   
 }
