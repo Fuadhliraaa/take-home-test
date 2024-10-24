@@ -1,4 +1,4 @@
-package com.assignment.test.dto;
+package com.assignment.test.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginReq {
+public class UserDto {
   
   private String email;
-  private String password;
+  private String first_name;
+  private String last_name;
+  private String image;
   
 }
