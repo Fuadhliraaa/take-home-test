@@ -12,5 +12,6 @@ import lombok.Setter;
 public class TransactionReq {
   
   private long top_up_amount;
+  private String service_code;
   
 }

@@ -19,7 +19,7 @@ public class DataDto {
   private BigDecimal balance;
   private String invoice_number;
   private String service_code;
-  private String service_nm;
+  private String service_name;
   private String transaction_type;
   private BigDecimal total_amount;
   private Timestamp created_on;

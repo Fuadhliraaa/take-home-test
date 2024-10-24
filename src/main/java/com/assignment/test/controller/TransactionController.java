@@ -28,10 +28,20 @@ public class TransactionController {
   }
   
   @PostMapping("/topup")
-  public ResponseEntity topUpBalance(@RequestBody TransactionReq req, @RequestHeader("Authorization") String token) throws JsonProcessingException {
+  public ResponseEntity topUpBalance(@RequestBody TransactionReq req,
+                                     @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - TOP UP BALANCE");
     TransactionRes res = transactionService.topUpBalance(req, token);
     log.info("FINISH - TRANSACTION CONTROLLER - TOP UP BALANCE");
+    return ResponseEntity.ok(res);
+  }
+  
+  @PostMapping("/transaction")
+  public ResponseEntity doTrancsaction(@RequestBody TransactionReq req,
+                                       @RequestHeader("Authorization") String token) throws JsonProcessingException {
+    log.info("START - TRANSACTION CONTROLLER - TRANSACTION");
+    TransactionRes res = transactionService.doTransaction(req, token);
+    log.info("FINISH - TRANSACTION CONTROLLER - TRANSACTION");
     return ResponseEntity.ok(res);
   }
   
