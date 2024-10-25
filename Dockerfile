@@ -1,5 +1,5 @@
-# Use the official Gradle image with Java 21 for building
-FROM gradle:7.6.0-jdk21 AS build
+# Use the latest Gradle image with JDK 21 for building
+FROM gradle:8.3-jdk21 AS build
 WORKDIR /app
 COPY --chown=gradle:gradle . .
 RUN gradle clean build -x test -x check
