@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,15 @@ public class TransactionServiceImpl implements TransactionService {
   
   @Autowired
   private RestTemplate restTemplate;
+  
+  @Value("${spring.datasource.url}")
+  public String JDBC_URL;
+  
+  @Value("${spring.datasource.username}")
+  public String USERNAME;
+  
+  @Value("${spring.datasource.password}")
+  public String PASSWORD;
   
   @Override
   public TransactionRes getBalance(String token) throws JsonProcessingException {
@@ -75,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
       Map<Object, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
       updateMap.put("email", email);
-      PreparedStatementHelper.updateUserBalance(QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
+      PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
       
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
@@ -134,7 +144,7 @@ public class TransactionServiceImpl implements TransactionService {
       Map<Object, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
       updateMap.put("email", email);
-      PreparedStatementHelper.updateUserBalance(QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
+      PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
       
       Map<Object, Object> mapVal = new HashMap<>();
       mapVal.put("trxId", UserHelper.generateUUID());
@@ -146,7 +156,7 @@ public class TransactionServiceImpl implements TransactionService {
       mapVal.put("amount", req.getTop_up_amount());
       mapVal.put("timestamp", CommonUtils.getCurrentTimestamp());
       mapVal.put("desc", TrxConstant.TRX_TOPUP_DESC);
-      PreparedStatementHelper.saveTransaction(QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
+      PreparedStatementHelper.saveTransaction(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
       
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
@@ -221,9 +231,9 @@ public class TransactionServiceImpl implements TransactionService {
       mapVal.put("amount", amount);
       mapVal.put("timestamp", CommonUtils.getCurrentTimestamp());
       mapVal.put("desc", TrxConstant.TRX_TOPUP_DESC);
-      PreparedStatementHelper.saveTransaction(QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
+      PreparedStatementHelper.saveTransaction(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BALANCE);
       ps.setString(1, email);
       
@@ -238,7 +248,7 @@ public class TransactionServiceImpl implements TransactionService {
       Map<Object, Object> updateMap = new HashMap<>();
       updateMap.put("balance", newUserBal);
       updateMap.put("email", email);
-      PreparedStatementHelper.updateUserBalance(QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
+      PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
       
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() == 400) {
@@ -306,7 +316,7 @@ public class TransactionServiceImpl implements TransactionService {
       String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
       String email = JWTUtils.getEmailFromPayload(newToken);
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_GET_TRANSACTION_HISTORY);
       ps.setString(1, email);
       

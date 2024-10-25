@@ -1,11 +1,8 @@
 package com.assignment.test.constant;
 
-public class QueryConstant {
+import org.springframework.beans.factory.annotation.Value;
 
-//  FOR PREPARED STATEMENT
-  public static final String JDBC_URL = "jdbc:postgresql://localhost:5432/NUTECH_TRX";
-  public static final String USERNAME = "postgres";
-  public static final String PASSWORD = "root";
+public class QueryConstant {
 
 //  TABLE USER
   public static final String QUERY_SAVE_USER = "INSERT INTO users (id, email, first_nm, last_nm, password) VALUES (?, ?, ? ,?, ?)";

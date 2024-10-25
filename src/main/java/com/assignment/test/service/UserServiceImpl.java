@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +36,19 @@ public class UserServiceImpl implements UserService {
   @Autowired
   private RestTemplate restTemplate;
   
+  @Value("${spring.datasource.url}")
+  public String JDBC_URL;
+  
+  @Value("${spring.datasource.username}")
+  public String USERNAME;
+  
+  @Value("${spring.datasource.password}")
+  public String PASSWORD;
+  
   @Transactional
   public UserRes userRegistration(UserReq req) throws RuntimeException, JsonProcessingException {
     log.info("START - USER SERVICE - USER REGISTRATION");
     UserRes res = new UserRes();
-    
-    String jdbcUrl = QueryConstant.JDBC_URL;
-    String username = QueryConstant.USERNAME;
-    String password = QueryConstant.PASSWORD;
     
     Connection connection = null;
     PreparedStatement ps = null;
@@ -53,7 +59,7 @@ public class UserServiceImpl implements UserService {
       
       res = responseEntity.getBody();
       
-      connection = DriverManager.getConnection(jdbcUrl, username, password);
+      connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       
       ps = connection.prepareCall(QueryConstant.QUERY_SAVE_USER);
       
@@ -156,7 +162,7 @@ public class UserServiceImpl implements UserService {
         generateName = CommonUtils.generateDynamicFileName(ogName);
       }
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_GET_USER_ID);
       ps.setString(1, email);
       
@@ -277,7 +283,7 @@ public class UserServiceImpl implements UserService {
       String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
       String email = JWTUtils.getEmailFromPayload(newToken);
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_UPDATE_USER_PROFILE);
       ps.setString(1, req.getFirst_name());
       ps.setString(2, req.getLast_name());

@@ -18,9 +18,9 @@ public class PreparedStatementHelper {
   private static ResultSet rs;
   
 //  TRANSACTION TABLE
-  public static void saveTransaction(String sqlQuery, Map<Object, Object> mapValue) {
+  public static void saveTransaction(String JDBC_URL, String USERNAME, String PASSWORD, String sqlQuery, Map<Object, Object> mapValue) {
     try {
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(sqlQuery);
       ps.setString(1, mapValue.get("trxId").toString());
       ps.setString(2, mapValue.get("email").toString());
@@ -48,11 +48,11 @@ public class PreparedStatementHelper {
     
   }
   
-  public static void updateUserBalance(String sql, Map<Object, Object> mapVal) {
+  public static void updateUserBalance(String JDBC_URL, String USERNAME, String PASSWORD, String sql, Map<Object, Object> mapVal) {
     
     try {
     
-    con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+    con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     ps = con.prepareCall(sql);
     ps.setBigDecimal(1, new BigDecimal(String.valueOf(mapVal.get("balance"))));
     ps.setString(2, mapVal.get("email").toString());
