@@ -2,7 +2,7 @@ spring:
   application:
     name: interview
   datasource:
-    url: jdbc:postgresql://postgres:xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM@postgres.railway.internal:5432/railway
+    url: jdbc:postgresql://postgres.railway.internal:5432/railway
     username: postgres
     password: xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM
   jpa:
