@@ -45,4 +45,14 @@ public class TransactionController {
     return ResponseEntity.ok(res);
   }
   
+  @GetMapping("/transaction/history")
+  public ResponseEntity getTransactionHistory(@RequestHeader("Authorization") String token,
+                                              @RequestParam(defaultValue = "0") String offset,
+                                              @RequestParam(defaultValue = "3") String limit) throws JsonProcessingException {
+    log.info("START - TRANSACTION CONTROLLER - TRANSACTION HISTORY");
+    TransactionRes res = transactionService.transactionHistory(token, offset, limit);
+    log.info("FINISH - TRANSACTION CONTROLLER - TRANSACTION HISTORY");
+    return ResponseEntity.ok(res);
+  }
+  
 }

@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommonUtils {
   
-  private static final AtomicInteger incrementNumber = new AtomicInteger(1);
-  
   public static String generateDynamicFileName(String originalFileName) {
     String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
     return UUID.randomUUID().toString().concat(".").concat(fileExtension); // Generates a random name with the same extension
@@ -20,8 +18,8 @@ public class CommonUtils {
   public static String generateInvoceNo() {
     SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
     String currentDate = dateFormat.format(new Date());
-    String incrementedValue = String.format("%03d", incrementNumber.getAndIncrement());
-    return "INV" + currentDate + "-" + incrementedValue;
+    String randomNum = String.valueOf(Math.floor(Math.random() * 10));
+    return "INV" + currentDate + "-" + randomNum;
   }
   
   public static Timestamp getCurrentTimestamp() {

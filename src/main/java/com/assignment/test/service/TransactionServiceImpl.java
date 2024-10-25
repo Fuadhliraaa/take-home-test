@@ -3,6 +3,8 @@ package com.assignment.test.service;
 import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.QueryConstant;
 import com.assignment.test.constant.TrxConstant;
+import com.assignment.test.dto.trxdto.DataDto;
+import com.assignment.test.dto.trxdto.TransactionHistoryDto;
 import com.assignment.test.dto.trxdto.TransactionReq;
 import com.assignment.test.dto.trxdto.TransactionRes;
 import com.assignment.test.utils.CommonUtils;
@@ -22,10 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -262,7 +267,93 @@ public class TransactionServiceImpl implements TransactionService {
     }
     
     
-    log.info("START - TRX SERVICE - TRANSACTION");
+    log.info("END - TRX SERVICE - TRANSACTION");
+    return res;
+  }
+  
+  @Override
+  public TransactionRes transactionHistory(String token, String offset, String limit) throws JsonProcessingException {
+    log.info("START - TRX SERVICE - TRANSACTION HISTORY");
+    TransactionRes res = new TransactionRes();
+    
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    
+    try {
+    
+      String BASE_URL_TRX_HIST = BaseURLConstant.SWAGGER_BASE_URL.concat("/transaction/history");
+      
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Authorization", token);
+      headers.set("Accept", "application/json");
+      
+      HttpEntity<String> entity = new HttpEntity<>(headers);
+      
+      UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL_TRX_HIST)
+          .queryParam("offset", offset)
+          .queryParam("limit", limit);
+      
+      String urlWithParams = builder.toUriString();
+      
+      ResponseEntity<TransactionRes> responseEntity = restTemplate.exchange(
+          urlWithParams,
+          HttpMethod.GET,
+          entity,
+          TransactionRes.class
+      );
+      
+      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
+      String email = JWTUtils.getEmailFromPayload(newToken);
+      
+      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
+      ps = con.prepareCall(QueryConstant.QUERY_GET_TRANSACTION_HISTORY);
+      ps.setString(1, email);
+      
+      rs = ps.executeQuery();
+      
+      List<TransactionHistoryDto> trxHistList = new ArrayList<>();
+      while (rs.next()) {
+        
+        TransactionHistoryDto dto = new TransactionHistoryDto();
+        dto.setInvoice_number(rs.getString("invoice_no"));
+        dto.setTransaction_type(rs.getString("trx_type"));
+        dto.setDescription(rs.getString("description"));
+        dto.setTotal_amount(rs.getBigDecimal("total_amt"));
+        dto.setCreated_on(rs.getTimestamp("created_dt"));
+        
+        trxHistList.add(dto);
+        
+      }
+      
+      DataDto dto = new DataDto();
+      dto.setOffset(offset);
+      dto.setLimit(limit);
+      dto.setRecords(trxHistList);
+      
+      res.setData(dto);
+      res = responseEntity.getBody();
+      
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode().value() == 400) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, TransactionRes.class);
+        
+        
+      } else if (e.getStatusCode().value() == 401) {
+        String errorResponse = e.getResponseBodyAsString();
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(errorResponse, TransactionRes.class);
+        
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    
+    log.info("END - TRX SERVICE - TRANSACTION HISTORY");
     return res;
   }
 }
