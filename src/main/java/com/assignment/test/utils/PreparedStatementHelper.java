@@ -17,6 +17,7 @@ public class PreparedStatementHelper {
   private static PreparedStatement ps;
   private static ResultSet rs;
   
+//  TRANSACTION TABLE
   public static void saveTransaction(String sqlQuery, Map<Object, Object> mapValue) {
     try {
       con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
@@ -69,22 +70,6 @@ public class PreparedStatementHelper {
       }
     }
     
-  }
-  
-  public static ResultSet getUserBalanceInfo(String sql, Map<Object, Object> mapVal) {
-    try {
-      
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
-      ps = con.prepareCall(sql);
-      ps.setString(1, mapVal.get("email").toString());
-      
-      rs = ps.executeQuery();
-      
-    } catch (SQLException e) {
-      throw new RuntimeException();
-    }
-    
-    return rs;
   }
   
 }
