@@ -1,4 +1,4 @@
-package com.assignment.test.dto.user;
+package com.assignment.test.dto.informationdto;
 
 import com.assignment.test.dto.BaseRes;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRes extends BaseRes {
-
-    private Object data;
-
+public class InfoRes extends BaseRes {
+  
+  private Object data;
+  
 }

@@ -1,4 +1,4 @@
-package com.assignment.test.dto.user;
+package com.assignment.test.dto.userdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

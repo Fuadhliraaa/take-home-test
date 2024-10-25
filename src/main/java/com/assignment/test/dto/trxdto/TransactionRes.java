@@ -1,19 +1,17 @@
-package com.assignment.test.dto.user;
+package com.assignment.test.dto.trxdto;
 
+import com.assignment.test.dto.BaseRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Data {
-
-    private Object data;
-    private List dataList;
-
+public class TransactionRes extends BaseRes {
+  
+  private DataDto data;
+  
 }
