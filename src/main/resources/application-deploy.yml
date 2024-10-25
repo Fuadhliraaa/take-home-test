@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: interview
+  datasource:
+    url: postgresql://postgres:xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM@postgres.railway.internal:5432/railway
+    username: postgres
+    password: xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 9090
+  address: 0.0.0.0
