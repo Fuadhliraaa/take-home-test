@@ -51,6 +51,9 @@ public class TransactionServiceImpl implements TransactionService {
   @Value("${spring.datasource.password}")
   public String PASSWORD;
   
+  @Value("${{ Postgres.DATABASE_URL }}")
+  public String DATABASE_URL;
+  
   @Override
   public TransactionRes getBalance(String token) throws JsonProcessingException {
     log.info("START - TRX SERVICE - GET BALANCE");
