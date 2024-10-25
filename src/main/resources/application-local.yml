@@ -16,6 +16,11 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+  sql:
+    init:
+      mode: never
+      schema-location: classpath:schema.sql
+
 server:
   port: 9090
   address: 0.0.0.0
