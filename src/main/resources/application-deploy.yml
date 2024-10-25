@@ -3,8 +3,8 @@ spring:
     name: interview
   datasource:
     url: postgresql://postgres:xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM@postgres.railway.internal:5432/railway
-    username: postgres
-    password: xXcNzVFROoqkwjyUvIzzPgBGnhDxHidM
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
