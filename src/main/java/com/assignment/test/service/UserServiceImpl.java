@@ -45,9 +45,6 @@ public class UserServiceImpl implements UserService {
   @Value("${spring.datasource.password}")
   public String PASSWORD;
   
-  @Value("${{ Postgres.DATABASE_URL }}")
-  public String DATABASE_URL;
-  
   @Transactional
   public UserRes userRegistration(UserReq req) throws RuntimeException, JsonProcessingException {
     log.info("START - USER SERVICE - USER REGISTRATION");
