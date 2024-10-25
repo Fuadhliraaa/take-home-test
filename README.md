@@ -24,10 +24,10 @@ To get started with the project, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Fuadhliraaa/take-h
+   https://github.com/Fuadhliraaa/take-home-test.git
    
 ## Deployment
 
-My application has been deployed on Raillway.app with the application URL
+My application has been deployed on Railway.app with the application URL
 
 https://take-home-test-production-1695.up.railway.app
