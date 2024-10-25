@@ -26,4 +26,5 @@ public class QueryConstant {
   public static final String  QUERY_GET_TRANSACTION_HISTORY = "select a.invoice_no, a.trx_type, a.description, a.total_amt, a.created_dt from transaction a " +
       "where a.email = ? " +
       "order by a.created_dt desc";
+
 }

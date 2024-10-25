@@ -102,19 +102,6 @@ public class UserServiceImpl implements UserService {
       String BASE_URL_LOGIN = BaseURLConstant.SWAGGER_BASE_URL.concat("/login");
       ResponseEntity<LoginRes> responseEntity = restTemplate.postForEntity(BASE_URL_LOGIN, req, LoginRes.class);
       
-      con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
-      ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BY_EMAIL);
-      ps.setString(1, req.getEmail());
-      
-      rs = ps.executeQuery();
-      
-      String email = null;
-      while (rs.next()) {
-        
-        email = rs.getString("email");
-        
-      }
-      
       res = responseEntity.getBody();
       
     } catch (HttpClientErrorException e) {
@@ -127,15 +114,6 @@ public class UserServiceImpl implements UserService {
         
       }
       
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        if (ps != null) ps.close();
-        if (con != null) con.close();
-      } catch (SQLException e) {
-        throw new RuntimeException();
-      }
     }
     
     log.info("END - USER SERVICE - USER LOGIN");
@@ -176,11 +154,6 @@ public class UserServiceImpl implements UserService {
       String generateName = null;
       if (ogName != null) {
         generateName = CommonUtils.generateDynamicFileName(ogName);
-      }
-      
-      File dir = new File(imageDir.concat("/imageprofile"));
-      if (!dir.exists()) {
-        dir.mkdir();
       }
       
       con = DriverManager.getConnection(QueryConstant.JDBC_URL, QueryConstant.USERNAME, QueryConstant.PASSWORD);
