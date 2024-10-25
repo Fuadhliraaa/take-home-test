@@ -49,5 +49,7 @@ tasks.named('test') {
 }
 
 bootJar {
+
 	archiveFileName = 'take-home-test.jar'
+
 }
