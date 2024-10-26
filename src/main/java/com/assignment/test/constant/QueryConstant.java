@@ -30,4 +30,13 @@ public class QueryConstant {
   public static final String  QUERY_GET_TRANSACTION_HISTORY = "select a.invoice_no, a.trx_type, a.description, a.total_amt, a.created_dt from transaction a " +
       "where a.email = ? " +
       "order by a.created_dt desc";
+  
+  
+//  TABLE BANNER
+  public static final String QUERY_GET_ALL_BANNER = "SELECT * FROM banner ORDER BY id ASC";
+  
+  
+//  TABLE SERVICES
+  public static final String QUERY_GET_ALL_SERVICES = "SELECT * FROM services ORDER BY indx ASC";
+  
 }

@@ -24,7 +24,7 @@ public class InformationController {
   @GetMapping("/banner")
   public ResponseEntity getBannerInfo(@RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - INFORMATION CONTROLLER - BANNER INFO");
-    InfoRes res = informationService.getBannerInfo(token);
+    InfoRes res = informationService.newGetBannerInfo(token);
     log.info("FINISH - INFORMATION CONTROLLER - BANNER INFO");
     return ResponseEntity.ok(res);
   }
@@ -32,7 +32,7 @@ public class InformationController {
   @GetMapping("/services")
   public ResponseEntity getAllService(@RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - INFORMATION CONTROLLER - GET ALL SERVICE");
-    InfoRes res = informationService.getAllServices(token);
+    InfoRes res = informationService.newGetAllServices(token);
     log.info("FINISH - INFORMATION CONTROLLER - GET ALL SERVICE");
     return ResponseEntity.ok(res);
   }
