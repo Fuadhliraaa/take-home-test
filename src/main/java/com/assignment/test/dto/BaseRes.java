@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BaseRes {
 
-    private String status;
+    private int status;
     private String message;
 
 }

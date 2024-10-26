@@ -12,7 +12,7 @@ public class CommonUtils {
   
   public static String generateDynamicFileName(String originalFileName) {
     String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
-    return UUID.randomUUID().toString().concat(".").concat(fileExtension); // Generates a random name with the same extension
+    return UserHelper.generateUUID().substring(0, 20).concat(fileExtension); // Generates a random name with the same extension
   }
   
   public static String generateInvoceNo() {

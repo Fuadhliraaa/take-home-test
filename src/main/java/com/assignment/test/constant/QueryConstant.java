@@ -6,15 +6,22 @@ public class QueryConstant {
 
 //  TABLE USER
   public static final String QUERY_SAVE_USER = "INSERT INTO users (id, email, first_nm, last_nm, password) VALUES (?, ?, ? ,?, ?)";
-  public static final String QUERY_GET_USER_BY_EMAIL = "SELECT a.email, a.password FROM USERS a WHERE a.email = ?";;
+  public static final String QUERY_GET_USER_AND_PASS_BY_EMAIL = "SELECT a.email, a.password FROM USERS a WHERE a.email = ?";;
   public static final String QUERY_GET_USER_ID = "SELECT a.id FROM USERS a WHERE a.EMAIL = ?";
   public static final String QUERY_UPDATE_USER_PROFILE = "UPDATE users SET first_nm = ?, last_nm = ? WHERE email = ?";
   public static final String QUERY_GET_USER_BALANCE = "SELECT a.id, a.balance FROM users a WHERE a.email = ?";
   public static final String QUERY_UPDATE_USER_BALANCE = "UPDATE users SET balance = ? WHERE email = ?";
+  public static final String QUERY_GET_USER_PROFILE = "SELECT * FROM users a WHERE a.email = ?";
+  public static final String QUERY_GET_USER_PROFILE_AND_IMAGE = "SELECT a.id, a.first_nm, a.last_nm, b.image_dir, a.password FROM users as a " +
+      "JOIN user_pic as b on a.email = b.email " +
+      "WHERE a.email = ?";
   
 //  IMAGE TABLE
-  public static final String QUERY_SAVE_IMAGE = "INSERT INTO user_pic (id, image_nm, image_dir, image_size, user_id) VALUES " +
+  public static final String QUERY_SAVE_IMAGE = "INSERT INTO user_pic (id, image_nm, image_dir, image_size, email) VALUES " +
     "(?, ?, ?, ?, ?)";
+  public static final String QUERY_GET_IMAGE = "SELECT * FROM user_pic WHERE email = ?";
+  public static final String QUERY_UPDATE_IMAGE = "UPDATE user_pic SET image_nm = ?, image_dir = ?, image_size = ? " +
+      "WHERE email = ?";
 
   
 // TRANSACTION TABLE
@@ -23,5 +30,4 @@ public class QueryConstant {
   public static final String  QUERY_GET_TRANSACTION_HISTORY = "select a.invoice_no, a.trx_type, a.description, a.total_amt, a.created_dt from transaction a " +
       "where a.email = ? " +
       "order by a.created_dt desc";
-
 }
