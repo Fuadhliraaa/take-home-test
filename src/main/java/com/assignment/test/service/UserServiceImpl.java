@@ -146,9 +146,13 @@ public class UserServiceImpl implements UserService {
       } else {
         
         String token = jwtUtils.generateToken(req.getEmail());
+        
+        LoginDto dto = new LoginDto();
+        dto.setToken(token);
+        
         res.setData(ResponseConstant.STATUS_CODE_0);
         res.setMessage(ResponseConstant.STATUS_DESC_SUCCESSFULLY_LOGIN);
-        res.setData(token);
+        res.setData(dto);
         
       }
       

@@ -48,69 +48,6 @@ public class InformationServiceImpl implements InformationService{
   private JWTUtils jwtUtils;
   
   @Override
-  public InfoRes getBannerInfo(String token) throws JsonProcessingException {
-    log.info("START - INFORMATION SERVICE - BANNER");
-    InfoRes res = new InfoRes();
-    
-    try {
-      
-      String BASE_URL_BANNER = BaseURLConstant.SWAGGER_BASE_URL.concat("/banner");
-      
-      HttpHeaders headers = new HttpHeaders();
-      headers.set("Authorization", token);
-      headers.set("Accept", "application/json");
-      
-      HttpEntity<String> entity = new HttpEntity<>(headers);
-      
-      ResponseEntity<InfoRes> responseEntity = restTemplate.exchange(BASE_URL_BANNER, HttpMethod.GET, entity, InfoRes.class);
-      
-      res = responseEntity.getBody();
-      
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode().value() == 400) {
-        String errorResponse = e.getResponseBodyAsString();
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        res = objectMapper.readValue(errorResponse, InfoRes.class);
-      }
-    }
-    
-    log.info("END - INFORMATION SERVICE - BANNER");
-    return res;
-  }
-  
-  @Override
-  public InfoRes getAllServices(String token) throws JsonProcessingException {
-    log.info("START - INFORMATION SERVICE - GET SERVICE");
-    InfoRes res = new InfoRes();
-    
-    try {
-      
-      String BASE_URL_SERVICE = BaseURLConstant.SWAGGER_BASE_URL.concat("/services");
-      HttpHeaders headers = new HttpHeaders();
-      headers.set("Authorization", token);
-      headers.set("Accept", "application/json");
-      
-      HttpEntity<String> entity = new HttpEntity<>(headers);
-      
-      ResponseEntity<InfoRes> responseEntity = restTemplate.exchange(BASE_URL_SERVICE, HttpMethod.GET, entity, InfoRes.class);
-      
-      res = responseEntity.getBody();
-      
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode().value() == 400) {
-        String errorResponse = e.getResponseBodyAsString();
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        res = objectMapper.readValue(errorResponse, InfoRes.class);
-      }
-    }
-    
-    log.info("END - INFORMATION SERVICE - GET SERVICE");
-    return res;
-  }
-  
-  @Override
   public InfoRes newGetBannerInfo(String token) throws RuntimeException {
     log.info("START - INFORMATION SERVICE - GET BANNER");
     InfoRes res = new InfoRes();

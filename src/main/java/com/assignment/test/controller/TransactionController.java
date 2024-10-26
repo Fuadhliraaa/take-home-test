@@ -22,7 +22,7 @@ public class TransactionController {
   @GetMapping("/balance")
   public ResponseEntity getUserBalance(@RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - GET BALANCE");
-    TransactionRes res = transactionService.getBalance(token);
+    TransactionRes res = transactionService.newGetBalance(token);
     log.info("FINISH - TRANSACTION CONTROLLER - GET BALANCE");
     return ResponseEntity.ok(res);
   }
@@ -31,7 +31,7 @@ public class TransactionController {
   public ResponseEntity topUpBalance(@RequestBody TransactionReq req,
                                      @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - TOP UP BALANCE");
-    TransactionRes res = transactionService.topUpBalance(req, token);
+    TransactionRes res = transactionService.newTopUpBalance(req, token);
     log.info("FINISH - TRANSACTION CONTROLLER - TOP UP BALANCE");
     return ResponseEntity.ok(res);
   }

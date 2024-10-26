@@ -2,6 +2,7 @@ package com.assignment.test.service;
 
 import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.QueryConstant;
+import com.assignment.test.constant.ResponseConstant;
 import com.assignment.test.constant.TrxConstant;
 import com.assignment.test.dto.trxdto.DataDto;
 import com.assignment.test.dto.trxdto.TransactionHistoryDto;
@@ -78,14 +79,14 @@ public class TransactionServiceImpl implements TransactionService {
       res = responseEntity.getBody();
       
       BigDecimal balance = new BigDecimal(0);
-      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
-        balance = responseEntity.getBody().getData().getBalance();
-      }
+//      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
+//        balance = responseEntity.getBody().getData().getBalance();
+//      }
       
       String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
       String email = jwtUtils.getEmailFromPayload(newToken);
       
-      Map<Object, Object> updateMap = new HashMap<>();
+      Map<String, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
       updateMap.put("email", email);
       PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
@@ -137,14 +138,14 @@ public class TransactionServiceImpl implements TransactionService {
       BigDecimal balance = new BigDecimal(0);
       String serviceCode = TrxConstant.TRX_TYPE_TOPUP;
       String serviceName = TrxConstant.TRX_TYPE_TOPUP;
-      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
-        balance = responseEntity.getBody().getData().getBalance();
-      }
+//      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
+//        balance = responseEntity.getBody().getData().getBalance();
+//      }
       
       String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
       String email = jwtUtils.getEmailFromPayload(newToken);
       
-      Map<Object, Object> updateMap = new HashMap<>();
+      Map<String, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
       updateMap.put("email", email);
       PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
@@ -213,13 +214,13 @@ public class TransactionServiceImpl implements TransactionService {
       String serviceCode = null;
       String serviceName = null;
       String trxType = null;
-      
-      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
-        amount = responseEntity.getBody().getData().getTotal_amount();
-        serviceCode = responseEntity.getBody().getData().getService_code();
-        serviceName = responseEntity.getBody().getData().getService_name();
-        trxType = responseEntity.getBody().getData().getTransaction_type();
-      }
+
+//      if (responseEntity.getBody() != null && responseEntity.getBody().getData() != null) {
+//        amount = responseEntity.getBody().getData().getTotal_amount();
+//        serviceCode = responseEntity.getBody().getData().getService_code();
+//        serviceName = responseEntity.getBody().getData().getService_name();
+//        trxType = responseEntity.getBody().getData().getTransaction_type();
+//      }
       
       String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
       String email = jwtUtils.getEmailFromPayload(newToken);
@@ -248,7 +249,7 @@ public class TransactionServiceImpl implements TransactionService {
       }
       
       BigDecimal newUserBal = userBalance.subtract(amount);
-      Map<Object, Object> updateMap = new HashMap<>();
+      Map<String, Object> updateMap = new HashMap<>();
       updateMap.put("balance", newUserBal);
       updateMap.put("email", email);
       PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, updateMap);
@@ -294,7 +295,7 @@ public class TransactionServiceImpl implements TransactionService {
     ResultSet rs = null;
     
     try {
-    
+      
       String BASE_URL_TRX_HIST = BaseURLConstant.SWAGGER_BASE_URL.concat("/transaction/history");
       
       HttpHeaders headers = new HttpHeaders();
@@ -367,6 +368,130 @@ public class TransactionServiceImpl implements TransactionService {
     }
     
     log.info("END - TRX SERVICE - TRANSACTION HISTORY");
+    return res;
+  }
+  
+  @Override
+  public TransactionRes newGetBalance(String token) throws RuntimeException {
+    log.info("START - TRX SERVICE - GET BALANCE");
+    TransactionRes res = new TransactionRes();
+    
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    
+    try {
+      
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.extractEmail(newToken);
+      
+      if (!jwtUtils.validateToken(token, email)) {
+        res.setStatus(ResponseConstant.STATUS_CODE_108);
+        res.setMessage(ResponseConstant.STATUS_DESC_UNAUTHORIZED);
+      } else {
+        
+        con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BALANCE);
+        ps.setString(1, email);
+        
+        rs = ps.executeQuery();
+        
+        BigDecimal balance = new BigDecimal(0);
+        DataDto dto = new DataDto();
+        if (rs != null && rs.next()) {
+          
+          dto.setBalance(rs.getBigDecimal("balance"));
+          
+        } else {
+          
+          Map<String, Object> balMap = new HashMap<>();
+          balMap.put("balance", balance);
+          balMap.put("email", email);
+          PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, balMap);
+          
+          dto.setBalance(new BigDecimal(0));
+          
+        }
+        
+        res.setData(ResponseConstant.STATUS_CODE_0);
+        res.setMessage(ResponseConstant.STATUS_DESC_SUCCESS);
+        res.setData(dto);
+        
+      }
+      
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (con != null) con.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
+    }
+    
+    log.info("END - TRX SERVICE - GET BALANCE");
+    return res;
+  }
+  
+  @Override
+  public TransactionRes newTopUpBalance(TransactionReq req, String token) throws RuntimeException {
+    log.info("START - TRX SERVICE - TOP UP BALANCE");
+    TransactionRes res = new TransactionRes();
+    
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    
+    try {
+      
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.extractEmail(newToken);
+      
+      if (!jwtUtils.validateToken(token, email)) {
+        res.setStatus(ResponseConstant.STATUS_CODE_108);
+        res.setMessage(ResponseConstant.STATUS_DESC_UNAUTHORIZED);
+      } else if (req.getTop_up_amount() <= 0) {
+        res.setStatus(ResponseConstant.STATUS_CODE_102);
+        res.setMessage(ResponseConstant.STATUS_DESC_WRONG_BALANCE_NOMINAL);
+      } else {
+        
+        con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        ps = con.prepareCall(QueryConstant.QUERY_GET_USER_BALANCE);
+        ps.setString(1, email);
+        
+        rs = ps.executeQuery();
+        BigDecimal balDb = new BigDecimal(0);
+        while (rs.next()) {
+          balDb = rs.getBigDecimal("balance");
+        }
+        
+        BigDecimal newBalance = new BigDecimal(0);
+        if (balDb == null) {
+          newBalance = new BigDecimal(req.getTop_up_amount());
+        } else {
+          newBalance = balDb.add(new BigDecimal(req.getTop_up_amount()));
+        }
+        
+        Map<String, Object> balMap = new HashMap<>();
+        balMap.put("balance", newBalance);
+        balMap.put("email", email);
+        PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, balMap);
+        
+        DataDto dto = new DataDto();
+        dto.setBalance(newBalance);
+        
+        res.setStatus(ResponseConstant.STATUS_CODE_0);
+        res.setMessage(ResponseConstant.STATUS_DESC_SUCCESS_TOPUP);
+        res.setData(dto);
+        
+      }
+      
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    
+    log.info("END - TRX SERVICE - TOP UP BALANCE");
     return res;
   }
 }

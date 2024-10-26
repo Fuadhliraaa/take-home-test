@@ -9,7 +9,7 @@ public class QueryConstant {
   public static final String QUERY_GET_USER_AND_PASS_BY_EMAIL = "SELECT a.email, a.password FROM USERS a WHERE a.email = ?";;
   public static final String QUERY_GET_USER_ID = "SELECT a.id FROM USERS a WHERE a.EMAIL = ?";
   public static final String QUERY_UPDATE_USER_PROFILE = "UPDATE users SET first_nm = ?, last_nm = ? WHERE email = ?";
-  public static final String QUERY_GET_USER_BALANCE = "SELECT a.id, a.balance FROM users a WHERE a.email = ?";
+  public static final String QUERY_GET_USER_BALANCE = "SELECT a.id, a.balance FROM users a WHERE email = ?";
   public static final String QUERY_UPDATE_USER_BALANCE = "UPDATE users SET balance = ? WHERE email = ?";
   public static final String QUERY_GET_USER_PROFILE = "SELECT * FROM users a WHERE a.email = ?";
   public static final String QUERY_GET_USER_PROFILE_AND_IMAGE = "SELECT a.id, a.first_nm, a.last_nm, b.image_dir, a.password FROM users as a " +

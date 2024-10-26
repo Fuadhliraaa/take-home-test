@@ -10,5 +10,8 @@ public interface TransactionService {
   public TransactionRes topUpBalance(TransactionReq req, String token) throws JsonProcessingException;
   public TransactionRes doTransaction(TransactionReq req, String token) throws JsonProcessingException;
   public TransactionRes transactionHistory(String token, String offset, String limit) throws JsonProcessingException;
+  
+  public TransactionRes newGetBalance(String token) throws RuntimeException;
+  public TransactionRes newTopUpBalance(TransactionReq req, String token) throws RuntimeException;
 
 }

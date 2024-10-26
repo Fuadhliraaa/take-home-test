@@ -53,7 +53,7 @@ public class PreparedStatementHelper {
       String USERNAME,
       String PASSWORD,
       String sql,
-      Map<Object, Object> mapVal) {
+      Map<String, Object> mapVal) {
     
     try {
       

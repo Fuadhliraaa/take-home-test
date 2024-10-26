@@ -20,5 +20,7 @@ public class ResponseConstant {
   public static String STATUS_DESC_UNAUTHORIZED = "Token tidak tidak valid atau kadaluwarsa";
   public static String STATUS_DESC_SUCCESS = "Sukses";
   public static String STATUS_DESC_SUCCESS_UPDATE_PROFILE = "Update Pofile berhasil";
+  public static String STATUS_DESC_WRONG_BALANCE_NOMINAL = "Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0";
+  public static String STATUS_DESC_SUCCESS_TOPUP = "Top Up Balance berhasil";
 
 }
