@@ -8,4 +8,7 @@ public interface InformationService {
   public InfoRes getBannerInfo(String token) throws JsonProcessingException;
   public InfoRes getAllServices(String token) throws JsonProcessingException;
   
+  public InfoRes newGetBannerInfo(String token) throws RuntimeException;
+  public InfoRes newGetAllServices(String token) throws RuntimeException;
+  
 }
