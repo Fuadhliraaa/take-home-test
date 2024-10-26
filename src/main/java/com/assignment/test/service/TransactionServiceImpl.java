@@ -51,6 +51,9 @@ public class TransactionServiceImpl implements TransactionService {
   @Value("${spring.datasource.password}")
   public String PASSWORD;
   
+  @Autowired
+  private JWTUtils jwtUtils;
+  
   @Override
   public TransactionRes getBalance(String token) throws JsonProcessingException {
     log.info("START - TRX SERVICE - GET BALANCE");
@@ -79,8 +82,8 @@ public class TransactionServiceImpl implements TransactionService {
         balance = responseEntity.getBody().getData().getBalance();
       }
       
-      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
-      String email = JWTUtils.getEmailFromPayload(newToken);
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.getEmailFromPayload(newToken);
       
       Map<Object, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
@@ -138,8 +141,8 @@ public class TransactionServiceImpl implements TransactionService {
         balance = responseEntity.getBody().getData().getBalance();
       }
       
-      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
-      String email = JWTUtils.getEmailFromPayload(newToken);
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.getEmailFromPayload(newToken);
       
       Map<Object, Object> updateMap = new HashMap<>();
       updateMap.put("balance", balance);
@@ -218,8 +221,8 @@ public class TransactionServiceImpl implements TransactionService {
         trxType = responseEntity.getBody().getData().getTransaction_type();
       }
       
-      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
-      String email = JWTUtils.getEmailFromPayload(newToken);
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.getEmailFromPayload(newToken);
       
       Map<Object, Object> mapVal = new HashMap<>();
       mapVal.put("trxId", UserHelper.generateUUID());
@@ -313,8 +316,8 @@ public class TransactionServiceImpl implements TransactionService {
           TransactionRes.class
       );
       
-      String newToken = JWTUtils.getTokenFromAuthorizationHeader(token);
-      String email = JWTUtils.getEmailFromPayload(newToken);
+      String newToken = jwtUtils.getTokenFromAuthorizationHeader(token);
+      String email = jwtUtils.getEmailFromPayload(newToken);
       
       con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
       ps = con.prepareCall(QueryConstant.QUERY_GET_TRANSACTION_HISTORY);

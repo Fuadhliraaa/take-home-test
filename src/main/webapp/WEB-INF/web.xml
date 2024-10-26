@@ -1,0 +1,14 @@
+<servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+    <multipart-config>
+        <max-file-size>20971520</max-file-size> <!-- Max size 5MB -->
+        <max-request-size>20971520</max-request-size> <!-- Max request size 20MB -->
+        <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
+</servlet>

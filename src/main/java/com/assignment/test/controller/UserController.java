@@ -9,10 +9,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Validated
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -25,7 +28,7 @@ public class UserController {
   @PostMapping("/registration")
   public ResponseEntity userRegistration(@RequestBody UserReq req) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - USER REGISTRATION");
-    UserRes res = userService.userRegistration(req);
+    UserRes res = userService.newUserRegistration(req);
     log.info("FINISH - USER CONTROLLER - USER REGISTRATION");
     return ResponseEntity.ok(res);
   }
@@ -33,16 +36,16 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity userLogin(@RequestBody LoginReq req) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - LOGIN USER");
-    LoginRes res = userService.userLogin(req);
+    LoginRes res = userService.newUserLogin(req);
     log.info("FINISH - USER CONTROLLER - LOGIN USER");
     return ResponseEntity.ok(res);
   }
   
-  @PutMapping("/profile/image")
-  public ResponseEntity uploadImageProfile(@RequestParam MultipartFile file,
+  @PutMapping(value = "/profile/image")
+  public ResponseEntity uploadImageProfile(@RequestParam("file") MultipartFile file,
                                            @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - UPLOAD IMAGE");
-    UserRes res = userService.updloadImage(file, token);
+    UserRes res = userService.uploadImage(file, token);
     log.info("START - USER CONTROLLER - UPLOAD IMAGE");
     return ResponseEntity.ok(res);
   }
@@ -50,7 +53,7 @@ public class UserController {
   @GetMapping("/profile")
   public ResponseEntity getUserProfile(@RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - USER PROFILE");
-    UserRes res = userService.getUserProfile(token);
+    UserRes res = userService.newGetUserProfile(token);
     log.info("FINISH - USER CONTROLLER - USER PROFILE");
     return ResponseEntity.ok(res);
   }
@@ -58,7 +61,7 @@ public class UserController {
   @PutMapping("/profile/update")
   public ResponseEntity updateUserProfile(@RequestBody UserReq req, @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - USER CONTROLLER - UPDATE USER PROFILE");
-    UserRes res = userService.updateUserProfile(req, token);
+    UserRes res = userService.newUpdateUserProfile(req, token);
     log.info("FINISH - USER CONTROLLER - UPDATE USER PROFILE");
     return ResponseEntity.ok(res);
   }

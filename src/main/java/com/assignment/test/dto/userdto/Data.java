@@ -14,6 +14,5 @@ import java.util.List;
 public class Data {
 
     private Object data;
-    private List dataList;
 
 }

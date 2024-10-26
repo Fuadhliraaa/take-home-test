@@ -8,11 +8,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
-
-  public UserRes userRegistration(UserReq req) throws RuntimeException, JsonProcessingException;
-  public LoginRes userLogin(LoginReq req) throws JsonProcessingException;
-  public UserRes updloadImage(MultipartFile file, String token) throws JsonProcessingException;
-  public UserRes getUserProfile(String token) throws JsonProcessingException;
-  public UserRes updateUserProfile(UserReq req, String token) throws JsonProcessingException;
+  
+  public UserRes newUserRegistration(UserReq req) throws RuntimeException;
+  public LoginRes newUserLogin(LoginReq req) throws RuntimeException;
+  public UserRes uploadImage(MultipartFile file, String token) throws RuntimeException;
+  public UserRes newGetUserProfile(String token) throws RuntimeException;
+  public UserRes newUpdateUserProfile(UserReq req, String token) throws RuntimeException;
 
 }

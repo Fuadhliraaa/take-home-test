@@ -17,7 +17,7 @@ public class PreparedStatementHelper {
   private static PreparedStatement ps;
   private static ResultSet rs;
   
-//  TRANSACTION TABLE
+  //  TRANSACTION TABLE
   public static void saveTransaction(String JDBC_URL, String USERNAME, String PASSWORD, String sqlQuery, Map<Object, Object> mapValue) {
     try {
       con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -48,19 +48,121 @@ public class PreparedStatementHelper {
     
   }
   
-  public static void updateUserBalance(String JDBC_URL, String USERNAME, String PASSWORD, String sql, Map<Object, Object> mapVal) {
+  public static void updateUserBalance(
+      String JDBC_URL,
+      String USERNAME,
+      String PASSWORD,
+      String sql,
+      Map<Object, Object> mapVal) {
     
     try {
-    
-    con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-    ps = con.prepareCall(sql);
-    ps.setBigDecimal(1, new BigDecimal(String.valueOf(mapVal.get("balance"))));
-    ps.setString(2, mapVal.get("email").toString());
-    
-    ps.executeUpdate();
-    
+      
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+      ps = con.prepareCall(sql);
+      ps.setBigDecimal(1, new BigDecimal(String.valueOf(mapVal.get("balance"))));
+      ps.setString(2, mapVal.get("email").toString());
+      
+      ps.executeUpdate();
+      
     } catch (SQLException e) {
       throw new RuntimeException();
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (con != null) con.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
+    }
+    
+  }
+  
+  //  USERS TABLE
+  public static void saveUser(
+      String JDBC_URL,
+      String USERNAME,
+      String PASS,
+      String sql,
+      Map<String, Object> valMap) {
+    
+    try {
+      
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASS);
+      ps = con.prepareCall(sql);
+      ps.setString(1, valMap.get("uuid").toString());
+      ps.setString(2, valMap.get("email").toString());
+      ps.setString(3, valMap.get("firstName").toString());
+      ps.setString(4, valMap.get("lastName").toString());
+      ps.setString(5, valMap.get("password").toString());
+      
+      ps.executeUpdate();
+      
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (con != null) con.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
+    }
+    
+  }
+  
+  public static void updateUserProfile(
+      String JDBC_URL,
+      String USERNAME,
+      String PASSWORD,
+      String sql,
+      Map<String, Object> mapVal) {
+    
+    try {
+      
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+      ps = con.prepareCall(sql);
+      ps.setString(1, mapVal.get("firstName").toString());
+      ps.setString(2, mapVal.get("lastName").toString());
+      ps.setString(3, mapVal.get("email").toString());
+      
+      ps.executeUpdate();
+      
+    } catch (SQLException e) {
+      throw new RuntimeException();
+    } finally {
+      try {
+        if (ps != null) ps.close();
+        if (con != null) con.close();
+      } catch (SQLException e) {
+        throw new RuntimeException();
+      }
+    }
+    
+  }
+  
+  
+  //  USER PIC TABLE
+  public static void saveUserPic(
+      String JDBC_URL,
+      String USERNAME,
+      String PASS,
+      String sql,
+      Map<String, Object> valMap) {
+    
+    try {
+      
+      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASS);
+      ps = con.prepareCall(sql);
+      ps.setString(1, valMap.get("uuid").toString());
+      ps.setString(2, valMap.get("generatedName").toString());
+      ps.setString(3, valMap.get("imageDir").toString());
+      ps.setInt(4, Integer.parseInt(valMap.get("size").toString()));
+      ps.setString(5, valMap.get("email").toString());
+      
+      ps.executeUpdate();
+      
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
