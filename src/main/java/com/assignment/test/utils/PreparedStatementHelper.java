@@ -167,38 +167,4 @@ public class PreparedStatementHelper {
     
   }
   
-  
-  //  USER PIC TABLE
-  public static void saveUserPic(
-      String JDBC_URL,
-      String USERNAME,
-      String PASS,
-      String sql,
-      Map<String, Object> valMap) {
-    
-    try {
-      
-      con = DriverManager.getConnection(JDBC_URL, USERNAME, PASS);
-      ps = con.prepareCall(sql);
-      ps.setString(1, valMap.get("uuid").toString());
-      ps.setString(2, valMap.get("generatedName").toString());
-      ps.setString(3, valMap.get("imageDir").toString());
-      ps.setInt(4, Integer.parseInt(valMap.get("size").toString()));
-      ps.setString(5, valMap.get("email").toString());
-      
-      ps.executeUpdate();
-      
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        if (ps != null) ps.close();
-        if (con != null) con.close();
-      } catch (SQLException e) {
-        throw new RuntimeException();
-      }
-    }
-    
-  }
-  
 }

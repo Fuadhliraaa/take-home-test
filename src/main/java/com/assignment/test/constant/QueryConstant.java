@@ -14,14 +14,6 @@ public class QueryConstant {
       "WHERE a.email = ?";
   public static final String QUERY_UPDATE_USER_PIC = "UPDATE users SET user_pic = ? WHERE email = ?";
   
-//  IMAGE TABLE
-  public static final String QUERY_SAVE_IMAGE = "INSERT INTO user_pic (id, image_nm, image_dir, image_size, email) VALUES " +
-    "(?, ?, ?, ?, ?)";
-  public static final String QUERY_GET_IMAGE = "SELECT * FROM user_pic WHERE email = ?";
-  public static final String QUERY_UPDATE_IMAGE = "UPDATE user_pic SET image_nm = ?, image_dir = ?, image_size = ? " +
-      "WHERE email = ?";
-
-  
 // TRANSACTION TABLE
   public static final String QUERY_SAVE_TRANSACTION = "INSERT INTO transaction (id, email, invoice_no, service_cd, " +
     "service_nm, trx_type, total_amt, created_dt, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
