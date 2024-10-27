@@ -1,12 +1,8 @@
 package com.assignment.test.utils;
 
-import com.assignment.test.dto.trxdto.DataDto;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommonUtils {
   

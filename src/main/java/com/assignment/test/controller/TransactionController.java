@@ -22,7 +22,7 @@ public class TransactionController {
   @GetMapping("/balance")
   public ResponseEntity getUserBalance(@RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - GET BALANCE");
-    TransactionRes res = transactionService.getBalance(token);
+    TransactionRes res = transactionService.newGetBalance(token);
     log.info("FINISH - TRANSACTION CONTROLLER - GET BALANCE");
     return ResponseEntity.ok(res);
   }
@@ -31,7 +31,7 @@ public class TransactionController {
   public ResponseEntity topUpBalance(@RequestBody TransactionReq req,
                                      @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - TOP UP BALANCE");
-    TransactionRes res = transactionService.topUpBalance(req, token);
+    TransactionRes res = transactionService.newTopUpBalance(req, token);
     log.info("FINISH - TRANSACTION CONTROLLER - TOP UP BALANCE");
     return ResponseEntity.ok(res);
   }
@@ -40,17 +40,17 @@ public class TransactionController {
   public ResponseEntity doTrancsaction(@RequestBody TransactionReq req,
                                        @RequestHeader("Authorization") String token) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - TRANSACTION");
-    TransactionRes res = transactionService.doTransaction(req, token);
+    TransactionRes res = transactionService.newDoTransaction(req, token);
     log.info("FINISH - TRANSACTION CONTROLLER - TRANSACTION");
     return ResponseEntity.ok(res);
   }
   
   @GetMapping("/transaction/history")
   public ResponseEntity getTransactionHistory(@RequestHeader("Authorization") String token,
-                                              @RequestParam(defaultValue = "0") String offset,
-                                              @RequestParam(defaultValue = "3") String limit) throws JsonProcessingException {
+                                              @RequestParam(defaultValue = "0") int offset,
+                                              @RequestParam(defaultValue = "0") Integer limit) throws JsonProcessingException {
     log.info("START - TRANSACTION CONTROLLER - TRANSACTION HISTORY");
-    TransactionRes res = transactionService.transactionHistory(token, offset, limit);
+    TransactionRes res = transactionService.newTransactionHistory(token, offset, limit);
     log.info("FINISH - TRANSACTION CONTROLLER - TRANSACTION HISTORY");
     return ResponseEntity.ok(res);
   }

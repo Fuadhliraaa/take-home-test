@@ -6,5 +6,6 @@ public class TrxConstant {
   public static final String TRX_TYPE_PAYMENT = "PAYMENT";
   
   public static final String TRX_TOPUP_DESC = "Top Up balance";
+  public static final String TRX_PAYMENT_DESC = "Service Payment";
   
 }

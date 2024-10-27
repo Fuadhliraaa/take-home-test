@@ -1,6 +1,5 @@
 package com.assignment.test.service;
 
-import com.assignment.test.constant.BaseURLConstant;
 import com.assignment.test.constant.QueryConstant;
 import com.assignment.test.constant.ResponseConstant;
 import com.assignment.test.dto.userdto.*;
@@ -13,13 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,14 +89,17 @@ public class UserServiceImpl implements UserService {
       }
       
     } catch (RuntimeException e) {
+      log.error("Error ", e);
       throw new RuntimeException();
     } catch (SQLException e) {
+      log.error("Error ", e);
       throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
         if (con != null) con.close();
       } catch (SQLException e) {
+        log.error("Error ", e);
         throw new RuntimeException();
       }
     }
@@ -146,21 +144,28 @@ public class UserServiceImpl implements UserService {
       } else {
         
         String token = jwtUtils.generateToken(req.getEmail());
+        
+        LoginDto dto = new LoginDto();
+        dto.setToken(token);
+        
         res.setData(ResponseConstant.STATUS_CODE_0);
         res.setMessage(ResponseConstant.STATUS_DESC_SUCCESSFULLY_LOGIN);
-        res.setData(token);
+        res.setData(dto);
         
       }
       
     } catch (RuntimeException e) {
+      log.error("Error ", e);
       throw new RuntimeException();
     } catch (SQLException e) {
+      log.error("Error ", e);
       throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
         if (con != null) con.close();
       } catch (SQLException e) {
+        log.error("Error ", e);
         throw new RuntimeException();
       }
     }
@@ -258,12 +263,14 @@ public class UserServiceImpl implements UserService {
       log.error("Error ", e);
       throw new RuntimeException();
     } catch (SQLException e) {
+      log.error("Error ", e);
       throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
         if (con != null) con.close();
       } catch (SQLException e) {
+        log.error("Error ", e);
         throw new RuntimeException();
       }
     }
@@ -314,14 +321,17 @@ public class UserServiceImpl implements UserService {
       
       
     } catch (RuntimeException e) {
+      log.error("Error ", e);
       throw new RuntimeException();
     } catch (SQLException e) {
+      log.error("Error ", e);
       throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
         if (con != null) con.close();
       } catch (SQLException e) {
+        log.error("Error ", e);
         throw new RuntimeException();
       }
     }
@@ -386,29 +396,20 @@ public class UserServiceImpl implements UserService {
       log.error("Error ", e);
       throw new RuntimeException();
     } catch (SQLException e) {
+      log.error("Error ", e);
       throw new RuntimeException(e);
     } finally {
       try {
         if (ps != null) ps.close();
         if (con != null) con.close();
       } catch (SQLException e) {
+        log.error("Error ", e);
         throw new RuntimeException();
       }
     }
     
     log.info("END - USER SERVICE - UPDATE USER PROFILE");
     return res;
-  }
-
-
-//  STATIC METHOD
-  
-  private static HttpEntity<MultiValueMap<String, Object>> getMultiValueMapHttpEntity(MultipartFile file, HttpHeaders headers) throws IOException {
-    HttpEntity<String> entity = new HttpEntity<>(headers);
-    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("file", file.getResource());
-    
-    return new HttpEntity<>(body, headers);
   }
   
 }

@@ -1,6 +1,5 @@
-package com.assignment.test.dto.trxdto;
+package com.assignment.test.dto.userdto;
 
-import com.assignment.test.dto.BaseRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +9,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionRes extends BaseRes {
+public class LoginDto {
   
-  private Object data;
+  private String token;
   
 }

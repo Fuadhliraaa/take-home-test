@@ -8,6 +8,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,11 @@ import java.util.function.Function;
 
 @Service
 public class JWTUtils {
+
+//  @Value("${application.security.jwt.secret-key}")
+  private final String secretKey = keyGenerator();
   
-  @Value("${application.security.jwt.secret-key}")
-  private String secretKey;
+  private final Logger log = LoggerFactory.getLogger(JWTUtils.class);
   
   public String extractEmail(String token) {
     return extractClaim(token, Claims::getSubject);
@@ -83,6 +87,19 @@ public class JWTUtils {
   private Key getSignInKey() {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
+  }
+  
+  private String keyGenerator() {
+    final String character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    final int length = 50;
+    
+    Random random = new SecureRandom();
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < length; i++) {
+      int index = random.nextInt(character.length());
+      builder.append(character.charAt(index));
+    }
+    return builder.toString();
   }
   
 }
