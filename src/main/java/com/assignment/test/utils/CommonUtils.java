@@ -14,7 +14,7 @@ public class CommonUtils {
   public static String generateInvoceNo() {
     SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
     String currentDate = dateFormat.format(new Date());
-    String randomNum = String.valueOf(Math.floor(Math.random() * 10));
+    String randomNum = String.valueOf(Math.random() * 10);
     return "INV" + currentDate + "-" + randomNum;
   }
   
