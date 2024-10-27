@@ -19,7 +19,7 @@ public class QueryConstant {
     "service_nm, trx_type, total_amt, created_dt, description, current_tm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   public static final String  QUERY_GET_TRANSACTION_HISTORY = "select invoice_no, trx_type, description, total_amt, created_dt from transaction " +
       "where email = ? " +
-      "order by current_time desc ";
+      "order by current_tm desc ";
   
   
 //  TABLE BANNER
