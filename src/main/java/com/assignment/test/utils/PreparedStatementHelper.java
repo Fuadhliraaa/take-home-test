@@ -2,6 +2,7 @@ package com.assignment.test.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -16,6 +17,7 @@ public class PreparedStatementHelper {
   private static ResultSet rs;
   
   //  TRANSACTION TABLE
+  @Transactional
   public static void saveTransaction(String JDBC_URL, String USERNAME, String PASSWORD, String sqlQuery, Map<Object, Object> mapValue) {
     try {
       con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -29,6 +31,7 @@ public class PreparedStatementHelper {
       ps.setBigDecimal(7, new BigDecimal(String.valueOf(mapValue.get("amount"))));
       ps.setTimestamp(8, Timestamp.valueOf(mapValue.get("timestamp").toString()));
       ps.setString(9, mapValue.get("desc").toString());
+      ps.setBigDecimal(10, new BigDecimal(String.valueOf(mapValue.get("currentTime"))));
       
       ps.executeUpdate();
       
@@ -46,6 +49,7 @@ public class PreparedStatementHelper {
     
   }
   
+  @Transactional
   public static void updateUserBalance(
       String JDBC_URL,
       String USERNAME,
@@ -76,6 +80,7 @@ public class PreparedStatementHelper {
   }
   
   //  USERS TABLE
+  @Transactional
   public static void saveUser(
       String JDBC_URL,
       String USERNAME,
@@ -108,6 +113,7 @@ public class PreparedStatementHelper {
     
   }
   
+  @Transactional
   public static void updateUserProfile(
       String JDBC_URL,
       String USERNAME,
@@ -138,6 +144,7 @@ public class PreparedStatementHelper {
     
   }
   
+  @Transactional
   public static void updateUserPic(
       String JDBC_URL,
       String USERNAME,

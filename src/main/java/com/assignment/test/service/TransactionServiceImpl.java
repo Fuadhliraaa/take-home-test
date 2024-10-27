@@ -119,7 +119,7 @@ public class TransactionServiceImpl implements TransactionService {
     return res;
   }
   
-  @Override
+  @Transactional
   public TransactionRes newTopUpBalance(TransactionReq req, String token) throws RuntimeException {
     log.info("START - TRX SERVICE - TOP UP BALANCE");
     TransactionRes res = new TransactionRes();
@@ -170,9 +170,10 @@ public class TransactionServiceImpl implements TransactionService {
         mapVal.put("serviceCode", TrxConstant.TRX_TYPE_TOPUP);
         mapVal.put("serviceName", TrxConstant.TRX_TOPUP_SERVICE);
         mapVal.put("trxType", TrxConstant.TRX_TYPE_TOPUP);
-        mapVal.put("amount", newBalance);
+        mapVal.put("amount", req.getTop_up_amount());
         mapVal.put("timestamp", CommonUtils.getCurrentTimestamp());
         mapVal.put("desc", TrxConstant.TRX_TOPUP_DESC);
+        mapVal.put("currentTime", System.currentTimeMillis());
         PreparedStatementHelper.saveTransaction(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
         
         DataDto dto = new DataDto();
@@ -278,6 +279,7 @@ public class TransactionServiceImpl implements TransactionService {
         mapVal.put("amount", servicePrice);
         mapVal.put("timestamp", CommonUtils.getCurrentTimestamp());
         mapVal.put("desc", serviceName);
+        mapVal.put("currentTime", System.currentTimeMillis());
         PreparedStatementHelper.saveTransaction(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
         
         BigDecimal newUserBal = balDb.subtract(servicePrice);
@@ -355,8 +357,8 @@ public class TransactionServiceImpl implements TransactionService {
           ps.setString(1, email);
           
         }
-        log.info("SQL STATEMENT => " + sql);
         
+        log.info("SQL QUERY => "+ sql);
         rs = ps.executeQuery();
         
         List<TransactionHistoryDto> trxHistDto = new ArrayList<>();

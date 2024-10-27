@@ -16,10 +16,10 @@ public class QueryConstant {
   
 // TRANSACTION TABLE
   public static final String QUERY_SAVE_TRANSACTION = "INSERT INTO transaction (id, email, invoice_no, service_cd, " +
-    "service_nm, trx_type, total_amt, created_dt, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  public static final String  QUERY_GET_TRANSACTION_HISTORY = "select a.invoice_no, a.trx_type, a.description, a.total_amt, a.created_dt from transaction a " +
-      "where a.email = ? " +
-      "order by a.created_dt desc ";
+    "service_nm, trx_type, total_amt, created_dt, description, current_tm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  public static final String  QUERY_GET_TRANSACTION_HISTORY = "select invoice_no, trx_type, description, total_amt, created_dt from transaction " +
+      "where email = ? " +
+      "order by current_time desc ";
   
   
 //  TABLE BANNER
