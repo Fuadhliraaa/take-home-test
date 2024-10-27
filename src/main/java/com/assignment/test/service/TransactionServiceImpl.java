@@ -163,6 +163,18 @@ public class TransactionServiceImpl implements TransactionService {
         balMap.put("email", email);
         PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, balMap);
         
+        Map<Object, Object> mapVal = new HashMap<>();
+        mapVal.put("trxId", UserHelper.generateUUID());
+        mapVal.put("email", email);
+        mapVal.put("invoiceNo", CommonUtils.generateInvoceNo());
+        mapVal.put("serviceCode", TrxConstant.TRX_TYPE_TOPUP);
+        mapVal.put("serviceName", TrxConstant.TRX_TOPUP_SERVICE);
+        mapVal.put("trxType", TrxConstant.TRX_TYPE_TOPUP);
+        mapVal.put("amount", newBalance);
+        mapVal.put("timestamp", CommonUtils.getCurrentTimestamp());
+        mapVal.put("desc", TrxConstant.TRX_TOPUP_DESC);
+        PreparedStatementHelper.saveTransaction(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_TRANSACTION, mapVal);
+        
         DataDto dto = new DataDto();
         dto.setBalance(newBalance);
         
