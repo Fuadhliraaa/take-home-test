@@ -219,38 +219,16 @@ public class UserServiceImpl implements UserService {
           lastName = rs.getString("last_nm");
         }
         
-        ps = con.prepareCall(QueryConstant.QUERY_GET_IMAGE);
-        ps.setString(1, email);
-        
-        rs = ps.executeQuery();
-        String picId = null;
-        while (rs.next()) {
-          picId = rs.getString("id");
-        }
-        
-        if (rs != null && rs.next()) {
-          Map<String, Object> usrPicMap = new HashMap<>();
-          usrPicMap.put("uuid", picId);
-          usrPicMap.put("generatedName", generateName);
-          usrPicMap.put("imageDir", imageDir.concat("/").concat(generateName));
-          usrPicMap.put("size", file.getSize());
-          usrPicMap.put("email", email);
-          PreparedStatementHelper.saveUserPic(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_IMAGE, usrPicMap);
-        } else {
-          Map<String, Object> usrPicMap = new HashMap<>();
-          usrPicMap.put("uuid", UserHelper.generateUUID());
-          usrPicMap.put("generatedName", generateName);
-          usrPicMap.put("imageDir", imageDir.concat("/").concat(generateName));
-          usrPicMap.put("size", file.getSize());
-          usrPicMap.put("email", email);
-          PreparedStatementHelper.saveUserPic(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_SAVE_IMAGE, usrPicMap);
-        }
+        Map<String, Object> usrPicMap = new HashMap<>();
+        usrPicMap.put("userPic", imageDir.concat("/").concat(generateName));
+        usrPicMap.put("email", email);
+        PreparedStatementHelper.updateUserPic(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_PIC, usrPicMap);
         
         UserDto dto = new UserDto();
         dto.setEmail(email);
         dto.setFirst_name(firstName);
         dto.setLast_name(lastName);
-        dto.setProfile_image(imageDir.concat("/").concat(generateName));
+        dto.setProfile_image(usrPicMap.get("userPic").toString());
         
         res.setStatus(ResponseConstant.STATUS_CODE_0);
         res.setMessage(ResponseConstant.STATUS_DESC_SUCCESSFULLY_UPDATE_PROFILE_PIC);
@@ -299,17 +277,18 @@ public class UserServiceImpl implements UserService {
       } else {
         
         con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        ps = con.prepareCall(QueryConstant.QUERY_GET_USER_PROFILE_AND_IMAGE);
+        UserDto dto = new UserDto();
+        ps = con.prepareCall(QueryConstant.QUERY_GET_USER_PROFILE);
         ps.setString(1, email);
         
         rs = ps.executeQuery();
-        UserDto dto = new UserDto();
+        
         while (rs.next()) {
           
           dto.setEmail(email);
           dto.setFirst_name(rs.getString("first_nm"));
           dto.setLast_name(rs.getString("last_nm"));
-          dto.setProfile_image(rs.getString("image_dir"));
+          dto.setProfile_image(rs.getString("user_pic"));
           
         }
         
