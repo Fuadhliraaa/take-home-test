@@ -12,6 +12,7 @@ public class QueryConstant {
   public static final String QUERY_GET_USER_PROFILE_AND_IMAGE = "SELECT a.id, a.first_nm, a.last_nm, b.image_dir, a.password FROM users as a " +
       "JOIN user_pic as b on a.email = b.email " +
       "WHERE a.email = ?";
+  public static final String QUERY_UPDATE_USER_PIC = "UPDATE users SET user_pic = ? WHERE email = ?";
   
 //  IMAGE TABLE
   public static final String QUERY_SAVE_IMAGE = "INSERT INTO user_pic (id, image_nm, image_dir, image_size, email) VALUES " +
