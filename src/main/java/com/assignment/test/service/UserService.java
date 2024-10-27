@@ -4,7 +4,6 @@ import com.assignment.test.dto.userdto.LoginReq;
 import com.assignment.test.dto.userdto.LoginRes;
 import com.assignment.test.dto.userdto.UserReq;
 import com.assignment.test.dto.userdto.UserRes;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {

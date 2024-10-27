@@ -1,7 +1,6 @@
 package com.assignment.test.service;
 
 import com.assignment.test.dto.informationdto.InfoRes;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface InformationService {
   

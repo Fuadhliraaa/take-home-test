@@ -1,7 +1,5 @@
 package com.assignment.test.utils;
 
-import com.assignment.test.constant.QueryConstant;
-import com.assignment.test.constant.TrxConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,5 +22,9 @@ public class ResponseConstant {
   public static String STATUS_DESC_SUCCESS_UPDATE_PROFILE = "Update Pofile berhasil";
   public static String STATUS_DESC_WRONG_BALANCE_NOMINAL = "Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0";
   public static String STATUS_DESC_SUCCESS_TOPUP = "Top Up Balance berhasil";
+  public static String STATUS_DESC_INSUFICIENCE_BALANCE = "Saldo tidak mencukupi";
+  public static String STATUS_DESC_SERVICE_UNDIFINED = "Service atau Layanan tidak ditemukan";
+  public static String STATUS_DESC_TRX_SUCCESS = "Transaksi berhasil";
+  public static String STATUS_DESC_SUCCESSFUL_GET_TRX_HIST = "Get History Berhasil";
 
 }
