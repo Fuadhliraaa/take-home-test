@@ -10,17 +10,6 @@ CREATE TABLE IF NOT EXISTS public.users
     CONSTRAINT users_pkey PRIMARY KEY (id)
 )
 
--- CREATE TABLE USER_PIC IF NOT EXIST
-CREATE TABLE IF NOT EXISTS public.user_pic
-(
-    id character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    image_nm character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    image_dir character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    image_size numeric NOT NULL,
-    user_id character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT user_pic_pkey PRIMARY KEY (id)
-)
-
 -- CREATE TABLE TRANSACTION IF NOT EXIST
 CREATE TABLE IF NOT EXISTS public.transaction
 (
