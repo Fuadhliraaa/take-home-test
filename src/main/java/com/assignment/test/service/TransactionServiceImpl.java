@@ -53,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
   
   @Autowired
   private JWTUtils jwtUtils;
-
+  
   @Override
   public TransactionRes newGetBalance(String token) throws RuntimeException {
     log.info("START - TRX SERVICE - GET BALANCE");
@@ -81,18 +81,18 @@ public class TransactionServiceImpl implements TransactionService {
         
         BigDecimal balance = new BigDecimal(0);
         DataDto dto = new DataDto();
-        if (rs != null && rs.next()) {
+        while (rs.next()) {
           
-          dto.setBalance(rs.getBigDecimal("balance"));
-          
-        } else {
-          
-          Map<String, Object> balMap = new HashMap<>();
-          balMap.put("balance", balance);
-          balMap.put("email", email);
-          PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, balMap);
-          
-          dto.setBalance(new BigDecimal(0));
+          if (rs.getBigDecimal("balance") == null) {
+            Map<String, Object> balMap = new HashMap<>();
+            balMap.put("balance", balance);
+            balMap.put("email", email);
+            PreparedStatementHelper.updateUserBalance(JDBC_URL, USERNAME, PASSWORD, QueryConstant.QUERY_UPDATE_USER_BALANCE, balMap);
+            
+            dto.setBalance(BigDecimal.valueOf(0));
+          } else {
+            dto.setBalance(rs.getBigDecimal("balance"));
+          }
           
         }
         
@@ -324,7 +324,7 @@ public class TransactionServiceImpl implements TransactionService {
         res.setMessage(ResponseConstant.STATUS_DESC_UNAUTHORIZED);
       } else {
         
-        con = DriverManager.getConnection(JDBC_URL,USERNAME, PASSWORD);
+        con = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         
         boolean usePagination = (limit > 0);
         String sql = QueryConstant.QUERY_GET_TRANSACTION_HISTORY;
@@ -343,13 +343,13 @@ public class TransactionServiceImpl implements TransactionService {
           ps.setString(1, email);
           
         }
-        log.info("SQL STATEMENT => "+ sql);
+        log.info("SQL STATEMENT => " + sql);
         
         rs = ps.executeQuery();
         
         List<TransactionHistoryDto> trxHistDto = new ArrayList<>();
         while (rs.next()) {
-        
+          
           TransactionHistoryDto dto = new TransactionHistoryDto();
           dto.setInvoice_number(rs.getString("invoice_no"));
           dto.setTransaction_type(rs.getString("trx_type"));
@@ -358,7 +358,7 @@ public class TransactionServiceImpl implements TransactionService {
           dto.setCreated_on(rs.getTimestamp("created_dt"));
           
           trxHistDto.add(dto);
-        
+          
         }
         
         DataDto data = new DataDto();
